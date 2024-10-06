@@ -1,0 +1,93 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+.login-container, .chat-container {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-container input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.chat-container {
+  display: flex;
+}
+
+.contacts {
+  width: 30%;
+  border-right: 1px solid #ccc;
+}
+
+.chat-box {
+  width: 70%;
+  padding-left: 20px;
+}
+
+#chatWindow {
+  height: 300px;
+  overflow-y: scroll;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+#chatWindow p {
+  margin: 0;
+  padding: 5px;
+}
+
+#contactsList {
+  list-style-type: none;
+  padding: 0;
+}
+
+#contactsList li {
+  padding: 10px;
+  cursor: pointer;
+}
+.user-message {
+  background-color: #d1f7c4; /* Light green for user messages */
+  text-align: right; /* Align user messages to the right */
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.contact-message {
+  background-color: #f1f1f1; /* Light gray for contact messages */
+  text-align: left; /* Align contact messages to the left */
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.child{
+  display: none;
+  transition: 200ms;
+}
+.par:hover .child{
+  display: inline;
+}
+#videos {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+video {
+  width: 45%;
+  height: auto;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  background-color: black;
+}
+button {
+  font-size: 16px;
+}
