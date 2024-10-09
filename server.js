@@ -146,9 +146,14 @@ app.post('/login',async (req, res) => {
 
 
 app.get("/contacts",verifyAccessToken,async (request,response) => {
-    const userArray = userModel.users;
-    return response.json({msg:"list of contatcs" , users: userArray});
-})
+  const excludedUserId = request.query.id;
+  const users = userModel.users;
+  
+  const userArray = users.filter(user => user.id != excludedUserId);
+  
+  return response.json({msg:"list of contatcs" , users: userArray});
+});
+
 
 app.get("/contact", (request,response) => {
   const userArray = userModel.users;
@@ -211,6 +216,8 @@ io.on('connection', (socket) => {
     }
   });
 
+  
+
   socket.on('call-user', (data) => {
     const socketID = userSockets[data.to];
     io.to(socketID).emit('call-made', {
@@ -248,7 +255,7 @@ io.on('connection', (socket) => {
 
 // Start server
 const PORT = process.env.PORT;
-server.listen(PORT, () => {
+server.listen(PORT,() => {
   console.log(`Server is running on port ${PORT}`);
 });
 

@@ -93,7 +93,14 @@ document.getElementById('callBtn').addEventListener('click', async () => {
 
 // Socket handler for incoming calls
 socket.on('call-made', (data) => {
-    incomingCallDiv.style.display = 'block';
+    incomingCallDiv.style.display = 'flex';
+    
+    // Then, animate with GSAP
+    gsap.fromTo(
+        incomingCallDiv, 
+        { opacity: 0, scale: 0.8 }, // Starting state
+        { opacity: 1, scale: 1, duration: 0.5, ease: "power2.out" } // Ending state with animation
+    );
     callerIdSpan.textContent = data.callerId;
     currentCaller = data.from;
 
@@ -153,6 +160,7 @@ socket.on('ice-candidate', async (data) => {
 
 // Hang up the call
 document.getElementById('hangupBtn').addEventListener('click', () => {
+    document.getElementById('call-container').style.display='none';
     if (peerConnection) {
         peerConnection.close();
         peerConnection = null;
@@ -182,6 +190,7 @@ function stopLocalVideo() {
     localVideo.srcObject = null;  // Stop rendering the video
 }
 function cleanupCall() {
+    document.getElementById('call-container').style.display='none';
     if (peerConnection) {
         peerConnection.close();
         peerConnection = null;

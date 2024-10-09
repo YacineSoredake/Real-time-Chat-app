@@ -106,12 +106,13 @@ window.addEventListener('DOMContentLoaded', () => {
         // Function to append messages to the UI without reloading
         function appendMessage(sender, message) {
             const li = document.createElement('li');
+            li.className='shadow-lg'
         
             if (sender === "You") {
                 li.textContent = message;
                 li.classList.add('your-message'); // Add class for your messages
             } else {
-                li.className='flex items-center'
+                li.className='flex items-center shadow-md border-2 border-gray-300'
                 const img = document.createElement('img');
                 img.setAttribute("src",`../images/${image}`); // Set the source of the sender's image
                 img.classList.add('sender-image'); // Optional: Add a class for styling the image

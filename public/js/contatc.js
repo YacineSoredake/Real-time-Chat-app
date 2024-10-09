@@ -18,9 +18,8 @@ if (userPayload) {
 greetMsg.innerHTML=`Hi ${userPayload.username}, Wanna chat ?`;
 // Correct the spelling from "aceessToken"
 
-
 if (currentAccessToken) {
-    fetch('/contacts', {
+    fetch(`/contacts?id=${userPayload.userID}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${currentAccessToken}`,

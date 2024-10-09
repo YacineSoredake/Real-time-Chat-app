@@ -76,8 +76,8 @@ body {
   margin-right: 10px;  /* Rounded corners */
 }
 .sender-image {
-  width: 30px; /* Adjust width as needed */
-  height: 30px; /* Adjust height as needed */
+  width: 35px; /* Adjust width as needed */
+  height: 35px; /* Adjust height as needed */
   border-radius: 50%; /* Make it circular */
   margin-right: 5px; /* Add space between image and text */
 }
@@ -90,4 +90,11 @@ body {
   padding: 10px; /* Padding for comfort */
   border-radius: 10px;
   margin-left: 10px; /* Rounded corners */
+}
+#incomingCallDiv {
+  display: none;
+  opacity: 0;
+  top: 5%;
+  left: 50%;
+  transform: scale(0.8) translate(-50%, -50%);; /* Start small for the "pop" effect */
 }
