@@ -53,41 +53,41 @@ body {
   padding: 10px;
   cursor: pointer;
 }
-.user-message {
-  background-color: #d1f7c4; /* Light green for user messages */
-  text-align: right; /* Align user messages to the right */
-  margin: 5px 0;
-  padding: 10px;
-  border-radius: 5px;
-}
 
-.contact-message {
-  background-color: #f1f1f1; /* Light gray for contact messages */
-  text-align: left; /* Align contact messages to the left */
-  margin: 5px 0;
-  padding: 10px;
-  border-radius: 5px;
+.color-f{
+  background-color: rgb(90, 99, 156);
 }
-
-.child{
-  display: none;
-  transition: 200ms;
+.color-s{
+  background-color: rgb(119, 118, 179);
 }
-.par:hover .child{
-  display: inline;
+.color-t{
+  background-color: rgb(155, 134, 189);
 }
-#videos {
-  display: flex;
-  justify-content: space-around;
-  margin-top: 20px;
+.color-q{
+  background-color: rgb(234, 208, 239);
 }
-video {
-  width: 45%;
-  height: auto;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  background-color: black;
+.your-message {
+  background-color: rgb(119, 118, 179); /* Background for your messages */
+  color: white; /* Text color */
+  align-self: flex-end; /* Align to the right */
+  margin: 5px 0; /* Margin for spacing */
+  padding: 10px; /* Padding for comfort */
+  border-radius: 10px;
+  margin-right: 10px;  /* Rounded corners */
 }
-button {
-  font-size: 16px;
+.sender-image {
+  width: 30px; /* Adjust width as needed */
+  height: 30px; /* Adjust height as needed */
+  border-radius: 50%; /* Make it circular */
+  margin-right: 5px; /* Add space between image and text */
+}
+/* Style for sender's messages */
+.sender-message {
+  background-color: rgb(220, 220, 220); /* Background for other messages */
+  color: black; /* Text color */
+  align-self: flex-start; /* Align to the left */
+  margin: 5px 0; /* Margin for spacing */
+  padding: 10px; /* Padding for comfort */
+  border-radius: 10px;
+  margin-left: 10px; /* Rounded corners */
 }

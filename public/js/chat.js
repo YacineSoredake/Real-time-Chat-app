@@ -5,6 +5,8 @@ const sendButton = document.getElementById('sendButton');
 const urlParams = new URLSearchParams(window.location.search);
 const contactID = urlParams.get('contactID');
 const userID = urlParams.get('userID');
+const contactImgHeader = document.getElementById('contactImgHeader');
+const contactUsrHeader = document.getElementById('contactUsrHeader');
 
 // Function to get contact information
 const getContactInfo = async (arg) => {
@@ -26,6 +28,16 @@ const getContactInfo = async (arg) => {
     }
 };
 
+function scrollToBottom() {
+    const messages = document.getElementById('messages');
+    messages.scrollTop = messages.scrollHeight;
+}
+
+// Scroll to the bottom when the page has fully loaded
+window.addEventListener('DOMContentLoaded', () => {
+    scrollToBottom();
+});
+
 // Fetch contact info and initiate chat logic
 (async () => {
     const socket = io();
@@ -36,11 +48,15 @@ const getContactInfo = async (arg) => {
     const contactID = urlParams.get('contactID');
     const userID = urlParams.get('userID');
     
+    
     // Fetch contact info and initiate chat logic
     (async () => {
         const contactInformations = await getContactInfo(contactID);
-        const { username } = contactInformations;
-    
+        const { username,image } = contactInformations;
+        
+        contactImgHeader.setAttribute("src",`../images/${image}`);
+        contactUsrHeader.innerHTML=username;
+
         const room = `room-${Math.min(contactID, userID)}-${Math.max(contactID, userID)}`;
         joinRoom(room);
     
@@ -59,28 +75,27 @@ const getContactInfo = async (arg) => {
     
         // Ensure the receiveMessage event is only added once
         socket.on('receiveMessage', (data) => {
-            console.log('Received message:', data); // Debugging log
             const sender = data.sender === userID ? 'You' : username;
             appendMessage(sender, data.message);
         });
     
         // Sending messages
+// Sending messages
         sendButton.addEventListener('click', sendMessage);
         messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-    
-        function sendMessage() {
-            const msg = messageInput.value;
-            if (msg) {
-                console.log('Sending message:', msg); // Debug log for sent message
-                socket.emit('chatMessage', { room, message: msg, sender: userID, receiver: contactID });
-                messageInput.value = ''; // Clear input after sending
-                appendMessage('You', msg); // Display own message immediately
-            }
+         if (e.key === 'Enter') {
+            sendMessage();
         }
+        });
+
+        function sendMessage() {
+          const msg = messageInput.value;
+          if (msg) {
+            socket.emit('chatMessage', { room, message: msg, sender: userID, receiver: contactID });
+            messageInput.value = ''; // Clear input after sending
+         }
+        }
+
     
         // Error handling
         socket.on('errorMessage', (errorMessage) => {
@@ -91,10 +106,31 @@ const getContactInfo = async (arg) => {
         // Function to append messages to the UI without reloading
         function appendMessage(sender, message) {
             const li = document.createElement('li');
-            li.textContent = `${sender}: ${message}`;
-            messages.appendChild(li);
-            messages.scrollTop = messages.scrollHeight; // Auto scroll to the latest message
+        
+            if (sender === "You") {
+                li.textContent = message;
+                li.classList.add('your-message'); // Add class for your messages
+            } else {
+                li.className='flex items-center'
+                const img = document.createElement('img');
+                img.setAttribute("src",`../images/${image}`); // Set the source of the sender's image
+                img.classList.add('sender-image'); // Optional: Add a class for styling the image
+        
+                // Create a text node for the sender's name and message
+                const senderMessage = document.createTextNode(`${message}`);
+                
+                // Append the image and text node to the li
+                li.appendChild(img);
+                li.appendChild(senderMessage);
+                
+                li.classList.add('sender-message'); // Add class for sender's messages
+            }
+        
+            document.getElementById('messages').appendChild(li);
+            scrollToBottom(); // Scroll to bottom after appending new message
         }
+        
     })();
     
 })();
+

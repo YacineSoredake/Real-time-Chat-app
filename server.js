@@ -11,7 +11,6 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 const dotenv = require("dotenv");
-const { SocketAddress } = require("net");
 
 mongoose.connect("mongodb://localhost:27017/chatApp")
     .then(() => console.log("MongoDB connected"))
@@ -44,7 +43,7 @@ const signAccessToken = async (user) => {
   
   // sign token for user middleware
   
-  const signRefreshToken = async (user) => {
+const signRefreshToken = async (user) => {
   const payload = {
     expiresIn:'30d',
     issuer:'auth-servicz',
@@ -58,7 +57,7 @@ const signAccessToken = async (user) => {
   return refreshtoken
   }
 
-  const verifyAccessToken = (request, response, next) => {
+const verifyAccessToken = (request, response, next) => {
     const authHeader = request.headers['authorization'];
     if (!authHeader) {
       return response.status(401).json({ message: 'Authorization header missing' });
@@ -163,10 +162,17 @@ app.get("/contact", (request,response) => {
   }
 })
 
-// Handle socket connection and messaging
+// Handle socket connection and messaging and calls
+
+const userSockets = {};
+
 io.on('connection', (socket) => {
-  console.log(`hello to the chat mr ${socket.id}`);
-  
+
+  socket.on('entered', (userID) => {
+    userSockets[userID] = socket.id;
+    socket.userID = userID; 
+    console.log(userSockets);
+  });
   // Handle joining a room and loading previous messages
   socket.on('joinRoom', async (room) => {
     try {
@@ -175,7 +181,6 @@ io.on('connection', (socket) => {
 
       // Emit the previously loaded messages to the client
       socket.emit('loadMessages', messages);
-
       // Join the room
       socket.join(room);
     } catch (err) {
@@ -205,11 +210,45 @@ io.on('connection', (socket) => {
       socket.emit('errorMessage', 'Failed to send the message.');
     }
   });
+
+  socket.on('call-user', (data) => {
+    const socketID = userSockets[data.to];
+    io.to(socketID).emit('call-made', {
+        offer: data.offer,
+        from: socket.id,
+        callerId: data.to
+    });
 });
 
+  socket.on('call-answered', (data) => {
+    io.to(data.to).emit('call-answered', {
+        answer: data.answer,
+        from: socket.id
+    });
+});
+
+  socket.on('call-declined', (data) => {
+    io.to(data.from).emit('call-declined');
+});
+
+  socket.on('ice-candidate', (data) => {
+    io.to(data.to).emit('ice-candidate', data);
+});
+
+  // Handle user disconnect
+  socket.on('disconnect', () => {
+    if (socket.userID) {
+      delete userSockets[socket.userID];  // Remove user from the userSockets object
+      console.log(`User with ID ${socket.userID} disconnected.`);
+      console.log('Remaining users:', userSockets);
+    }
+  });
+
+});
 
 // Start server
 const PORT = process.env.PORT;
 server.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
+

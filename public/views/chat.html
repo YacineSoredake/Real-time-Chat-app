@@ -3,34 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Chat App</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Chatting with </title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        #messages { list-style-type: none; padding: 0; }
-        #messages li { padding: 8px; margin: 5px; background: #f1f1f1; }
-        #messageInput { width: 75%; }
-        #sendButton { margin-left: 10px; }
-        #callButton { margin-left: 10px; }
+        #messages { list-style-type: none;}
+
+        #incomingCallDiv{display: none;}
     </style>
 </head>
-<body>
-    <h1>Simple Chat App with Calls</h1>
-    <ul id="messages"></ul>
-    <input id="messageInput" autocomplete="off" placeholder="Type your message..." />
-    <button id="sendButton">Send</button>
-    <button id="callButton">Call</button>
+<body class="flex flex-col justify-between">
+    <!-- -- big div container of chat and call divs -->
+    <div class="flex flex-col justify-between gap-3">
 
-    <!-- Incoming call section -->
-    <div id="incoming-call" style="display:none;">
+         <!-- call div -->
+
+        <div id="call-container" class="hidden flex flex-col justify-center bg-gray-700 h-screen gap-5">
+            <div class="flex justify-center gap-3">
+                <video class="rounded-md w-full" id="localVideo" autoplay muted playsinline></video>
+                <video class="rounded-md w-full bg-gray-500" id="remoteVideo" autoplay playsinline></video>
+            </div>
+            <div class="button-container self-center">     
+                <button class="bg-red-600 p-2 rounded-full hover:bg-red-500" id="hangupBtn">
+                    <img class="h-10" src="../icons/hang-up-svgrepo-com.svg" alt="">                                                  
+                </button>
+                <button class="bg-blue-600 p-2 rounded-full hover:bg-blue-500" id="muteBtn">
+                    <img class="h-10" src="../icons/mute-1-svgrepo-com.svg" alt="">
+                </button>
+                <button class="bg-green-600 p-2 rounded-full hover:bg-green-500" id="hideCameraBtn">
+                    <img class="h-10" src="../icons/camera-slash-svgrepo-com.svg" alt="">
+                </button>
+                <button class="bg-gray-100 p-2 rounded-full hover:bg-gray-300" id="remotePipBtn">
+                    <img class="h-10" src="../icons/pip-svgrepo-com.svg" alt="">
+                </button>
+            </div>  
+        </div>
+        
+                <!-- ------ -->
+
+        <!-- chat div -->
+        <div class="flex flex-col justify-between gap-3">
+            <div class="w-full sticky color-f flex justify-between p-2 items-center">
+                <div class="flex items-center justify-start gap-3">
+                    <button class="flex items-center" onclick="history.back()">
+                        <img class="h-6" src="../icons/back-svgrepo-com.svg" alt="">
+                        <p class="text-gray-100">Back</p>
+                    </button>
+                    <img class="h-20 rounded-full border-2 border-gray-100" id="contactImgHeader" alt="">
+                    <p id="contactUsrHeader" class="text-gray-100 font-medium"></p>
+                </div>
+                <button class="flex items-center mr-10" id="callBtn">
+                    <img class="h-8 " src="../icons/call-medicine-svgrepo-com.svg" alt="">
+                    <p class="text-gray-100 p-1 ">Call</p>
+                </button>
+            </div>
+            
+            <!-- Chat Messages Container -->
+            <div id="chatContainer" class="flex-1 overflow-auto bg-gray-100 p-3">
+                <ul id="messages" class="flex flex-col gap-3"></ul>
+            </div>
+    
+            <div class="bg-gray-200 flex items-center justify-between gap-3 p-3">
+                <button class="bg-gray-100 p-2 rounded-full" id="">
+                    <img class="h-6" src="../icons/upload-svgrepo-com.svg" alt="">
+                </button>
+                <input class="bg-gray-200 p-2 w-full" id="messageInput" autocomplete="off" placeholder="message..." />
+                <button class="color-f p-2 rounded-full" id="sendButton"><img class="h-6" src="../icons/send-email-svgrepo-com.svg" alt=""></button>
+            </div>
+        </div>
+        <!-- ----- -->
+
+    </div>
+
+    <div id="incomingCallDiv">
         <p>Incoming call from <span id="caller-id"></span></p>
         <button id="answerBtn">Answer</button>
         <button id="declineBtn">Decline</button>
     </div>
 
-    <video id="localVideo" autoplay muted playsinline></video>
-    <video id="remoteVideo" autoplay playsinline></video>
-
     <script src="/socket.io/socket.io.js"></script>
     <script src="/public/js/chat.js"></script>
+    <script src="/public/js/RtcScrip.js"></script>
 </body>
+
 </html>
