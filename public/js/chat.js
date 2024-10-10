@@ -112,7 +112,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 li.textContent = message;
                 li.classList.add('your-message'); // Add class for your messages
             } else {
-                li.className='flex items-center shadow-md border-2 border-gray-300'
+                li.className='flex items-center shadow-md border border-indigo-600'
                 const img = document.createElement('img');
                 img.setAttribute("src",`../images/${image}`); // Set the source of the sender's image
                 img.classList.add('sender-image'); // Optional: Add a class for styling the image

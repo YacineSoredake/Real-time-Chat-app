@@ -62,6 +62,8 @@ async function createPeerConnection() {
 // Call button event listener
 document.getElementById('callBtn').addEventListener('click', async () => {
     document.getElementById('call-container').style.display='flex';
+    document.getElementById('chat-container').style.display='none';
+
     if (!localStream) {
         await getMedia();
     }
@@ -107,6 +109,7 @@ socket.on('call-made', (data) => {
     document.getElementById('answerBtn').onclick = async () => {
         incomingCallDiv.style.display = 'none';
         document.getElementById('call-container').style.display='flex';
+        document.getElementById('chat-container').style.display='none';
 
         if (!localStream) {
             await getMedia();
@@ -160,7 +163,6 @@ socket.on('ice-candidate', async (data) => {
 
 // Hang up the call
 document.getElementById('hangupBtn').addEventListener('click', () => {
-    document.getElementById('call-container').style.display='none';
     if (peerConnection) {
         peerConnection.close();
         peerConnection = null;
@@ -191,6 +193,7 @@ function stopLocalVideo() {
 }
 function cleanupCall() {
     document.getElementById('call-container').style.display='none';
+    document.getElementById('chat-container').style.display='flex';
     if (peerConnection) {
         peerConnection.close();
         peerConnection = null;

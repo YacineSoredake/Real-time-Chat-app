@@ -37,12 +37,12 @@ if (currentAccessToken) {
         const users = data.users;
         users.forEach(user => {
             const contact_link = document.createElement('a');
-            contact_link.className = 'par flex items-center justify-around gap-5 rounded-lg p-4 bg-pink-100 w-80 shadow-lg';
+            contact_link.className = 'flex items-center justify-around gap-5 rounded-lg p-4 bg-white w-80 shadow-md';
             contact_link.setAttribute("href", `./chat.html?contactID=${user.id}&userID=${userPayload.userID}`);
             contact_link.innerHTML = `
-                <img class="h-20 w-20 rounded-full shadow-md border-2 border-green-400" src="../images/${user.image}" alt="">
-                <p class="text-red-500">${user.username}</p>
-                <p class="child text-blue-500 bg-gray-100 p-2 rounded-lg shadow-md" style="opacity: 0;">
+                <img class="h-20 w-20 rounded-full shadow-md border-2 border-indigo-600" src="../images/${user.image}" alt="">
+                <p class="indigo-600 font-medium">${user.username}</p>
+                <p class="child text-white bg-indigo-600 p-2 rounded-lg shadow-md" style="opacity: 0;">
                     Chat now!
                 </p>
             `;

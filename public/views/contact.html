@@ -1,23 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-white">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Page</title>
+    <title> MyChat Contacts</title>
     <link rel="stylesheet" href="../css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-200 flex items-center justify-center h-screen">
-    <div id="Contact-container" class="rounded-lg shadow-lg bg-gray-100 flex flex-col items-center p-6">
-        <h2 class="text-2xl flex items-center font-bold text-gray-800 p-4">
-            <img class="h-14" src="../images/user-svgrepo-com.svg" alt=""> <p id="greetings-msg"></p>
-        </h2>
-        <a id="link-conatct" class="par flex items-center gap-5 rounded-lg p-4 bg-pink-100 w-80" href="./chat">
-           <!-- contact will be displayed here dynamically -->
-        </a>    
+<body class="flex items-center flex-col justify-evenly h-screen border md:flex-row">
+    <div id="heading-text">
+        <p class="text-7xl font-bold text-indigo-600">
+            MyChat!
+            <p class="ml-24 font-semibold p-0">
+                message and call your friends
+            </p>
+        </p>
+    </div>
+    <div id="Contact-container" class="rounded-lg gap-3 flex flex-col items-center p-6 border-2 border-indigo-600">
+        <h2 class="text-xl flex items-center font-bold text-gray-800">
+            <img class="h-14 p-2" src="../icons/chat-round-like-svgrepo-com.svg" alt=""> 
+            <p id="greetings-msg">Welcome Back!</p>
+        </h2>   
     </div>
     <script type="module" src="../js/contatc.js"></script>
+    <script type="module">
+        gsap.from("#heading-text", { 
+            x: -200,   
+            opacity: 0, 
+            duration: 1.5,  
+            ease: "power2.out" 
+        });
+
+        gsap.from("#Contact-container", { 
+            x: 200, 
+            opacity: 0, 
+            duration: 1.5,
+            ease: "power2.out", 
+            delay: 0.3
+        });
+    </script>
 </body>
 </html>
