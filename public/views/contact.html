@@ -10,7 +10,18 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="flex items-center flex-col justify-evenly h-screen border md:flex-row">
+    <script>
+        const disconnect = () => {
+            localStorage.removeItem("aceessToken");
+            localStorage.removeItem("refreshToken");
+            window.location="./login.html"
+        };
+    </script>
     <div id="heading-text">
+        <button onclick="disconnect()" class="flex items-center text-indigo-600 font-semibold">
+            <img class="h-10" src="../icons/log-out-off-out-svgrepo-com.svg" alt="">
+            Disconnect
+        </button>
         <p class="text-7xl font-bold text-indigo-600">
             MyChat!
             <p class="ml-24 font-semibold p-0">

@@ -7,6 +7,7 @@ const contactID = urlParams.get('contactID');
 const userID = urlParams.get('userID');
 const contactImgHeader = document.getElementById('contactImgHeader');
 const contactUsrHeader = document.getElementById('contactUsrHeader');
+const fileInput = document.getElementById('fileInput');
 
 // Function to get contact information
 const getContactInfo = async (arg) => {
@@ -54,6 +55,8 @@ window.addEventListener('DOMContentLoaded', () => {
         const contactInformations = await getContactInfo(contactID);
         const { username,image } = contactInformations;
         
+        document.getElementById('incomigcallmsg').innerHTML=`Incoming call from ${username}`
+        
         contactImgHeader.setAttribute("src",`../images/${image}`);
         contactUsrHeader.innerHTML=username;
 
@@ -69,18 +72,32 @@ window.addEventListener('DOMContentLoaded', () => {
         socket.on('loadMessages', (messagesArray) => {
             messagesArray.forEach(msg => {
                 const sender = msg.sender === userID ? 'You' : username;
-                appendMessage(sender, msg.message);
+                if (msg.imageUrl) {
+                    // If the message contains an image
+                    appendImage(sender, msg.imageUrl);
+                } else {
+                    // Regular text message
+                    appendMessage(sender, msg.message);
+                }
+
             });
         });
     
         // Ensure the receiveMessage event is only added once
         socket.on('receiveMessage', (data) => {
             const sender = data.sender === userID ? 'You' : username;
-            appendMessage(sender, data.message);
+            
+            if (data.imageUrl) {
+                // If the message contains an image
+                appendImage(sender, data.imageUrl);
+            } else {
+                // Regular text message
+                appendMessage(sender, data.message);
+            }
         });
     
         // Sending messages
-// Sending messages
+
         sendButton.addEventListener('click', sendMessage);
         messageInput.addEventListener('keypress', (e) => {
          if (e.key === 'Enter') {
@@ -102,6 +119,56 @@ window.addEventListener('DOMContentLoaded', () => {
             console.error(errorMessage);
             alert(errorMessage);
         });
+
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append('image', file);
+                formData.append('room', room);
+                formData.append('sender', userID);
+                formData.append('receiver', contactID);
+        
+                // Send the image to the server using Fetch API
+                fetch('/upload-image', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        appendImage('You', data.imageUrl); // Append your sent image
+                    } else {
+                        alert('Error uploading image');
+                    }
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                });
+            }
+        });
+
+        function appendImage(sender, imageUrl) {
+            const li = document.createElement('li');
+            const imgElement = document.createElement('img');
+            
+            imgElement.src = imageUrl;
+            imgElement.className = 'rounded-md max-w-xs';  // Style the image
+            imgElement.alt = "Image";  // Add alt attribute for better accessibility
+            
+            li.appendChild(imgElement);
+            
+            // Apply different classes based on the sender
+            if (sender === "You") {
+                li.className = 'flex justify-end items-center m-3';  // Align to the right for "You"
+            } else {
+                li.className = 'flex justify-start items-center m-3';  // Align to the left for the other sender
+            }
+        
+            document.getElementById('messages').appendChild(li);
+            scrollToBottom();  // Ensure the chat scrolls down when a new image is appended
+        }
+        
     
         // Function to append messages to the UI without reloading
         function appendMessage(sender, message) {

@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 localStorage.setItem("refreshToken",refreshToken)
                 setTimeout(() => {
                     window.location.href="/public/views/contact.html"
-                }, 2000);
+                }, 500);
             } else {
                 // Handle login errors
                 alert(result.message || 'Login failed. Please try again.');

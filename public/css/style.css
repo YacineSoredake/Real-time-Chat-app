@@ -60,14 +60,17 @@
   align-self: flex-end; /* Align to the right */
   margin: 5px 0; /* Margin for spacing */
   padding: 10px; /* Padding for comfort */
-  border-radius: 10px;
   margin-right: 10px;  /* Rounded corners */
+}
+.sent-image{
+  height: 50px;
 }
 .sender-image {
   width: 35px; /* Adjust width as needed */
   height: 35px; /* Adjust height as needed */
   border-radius: 50%; /* Make it circular */
-  margin-right: 5px; /* Add space between image and text */
+  margin-right: 5px;
+  align-self: flex-end; /* Add space between image and text */
 }
 /* Style for sender's messages */
 .sender-message {

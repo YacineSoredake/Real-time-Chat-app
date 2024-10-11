@@ -11,6 +11,9 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 const dotenv = require("dotenv");
+const multer = require('multer');
+
+// Configure multer for file uploads
 
 mongoose.connect("mongodb://localhost:27017/chatApp")
     .then(() => console.log("MongoDB connected"))
@@ -26,7 +29,6 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 app.get("/",(request,response) => {
    response.redirect("/public/views/login.html")
 })
-
 const signAccessToken = async (user) => {
     const payload = {
         expiresIn:'2d',
@@ -117,6 +119,46 @@ const RefreshAccessToken = async (request, response) => {
       return response.status(500).json({ message: 'Internal server error' });
     }
   };
+
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`);
+    }
+});
+
+const upload = multer({ storage: storage });
+
+// Serve the uploads folder statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Handle image upload
+app.post('/upload-image', upload.single('image'), (req, res) => {
+    try {
+        const imageUrl = `/uploads/${req.file.filename}`;
+        const { room, sender, receiver } = req.body;
+
+        // Emit the image message to the room
+        io.to(room).emit('receiveMessage', { sender, imageUrl });
+
+        // Optionally: Save the image message to the database
+        const newMessage = new Message({
+            room,
+            sender,
+            receiver,
+            imageUrl,
+            timestamp: new Date()
+        });
+        newMessage.save();
+
+        res.json({ success: true, imageUrl });
+    } catch (err) {
+        console.error('Error uploading image:', err);
+        res.status(500).json({ success: false, message: 'Image upload failed' });
+    }
+});
   
   // sign token for user middleware
 app.post('/login',async (req, res) => {

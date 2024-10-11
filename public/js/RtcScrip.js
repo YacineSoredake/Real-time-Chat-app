@@ -4,7 +4,6 @@ const localVideo = document.getElementById('localVideo');
 const remoteVideo = document.getElementById('remoteVideo');
 const remotePipBtn = document.getElementById('remotePipBtn');
 const incomingCallDiv = document.getElementById('incomingCallDiv');
-const callerIdSpan = document.getElementById('caller-id');
 let localStream;
 let peerConnection;
 let currentCaller = null;
@@ -103,7 +102,6 @@ socket.on('call-made', (data) => {
         { opacity: 0, scale: 0.8 }, // Starting state
         { opacity: 1, scale: 1, duration: 0.5, ease: "power2.out" } // Ending state with animation
     );
-    callerIdSpan.textContent = data.callerId;
     currentCaller = data.from;
 
     document.getElementById('answerBtn').onclick = async () => {

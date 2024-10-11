@@ -76,9 +76,12 @@
 
         <!-- Input section (fixed at the bottom) -->
         <div class="bg-gray-200 flex items-center justify-between gap-3 p-3">
-            <button class="bg-gray-100 p-2 rounded-full shadow-md">
+            <!-- Upload Button -->
+            <label for="fileInput" class="bg-gray-100 p-2 rounded-full shadow-md cursor-pointer">
                 <img class="h-6" src="../icons/upload-svgrepo-com.svg" alt="Upload">
-            </button>
+            </label>
+            <input type="file" id="fileInput" accept="image/*" class="hidden" />
+        
             <input class="bg-gray-200 p-2 w-full shadow-md border border-transparent hover:border-indigo-600 transition duration-300 ease-in-out" 
                    id="messageInput" 
                    autocomplete="off" 
@@ -89,10 +92,7 @@
         </div>
     </div>
     <div class="gap-3 bg-gray-100 p-2 rounded-xl w-44 top-2 absolute inset-x-1/2 flex flex-col items-center justify-center shadow-md" id="incomingCallDiv">
-        <p>
-             Incoming call from
-             <span id="caller-id"></span>
-        </p>
+        <p id="incomigcallmsg"></p>
         <div class="flex gap-3">
             <button class="bg-green-400 p-1 rounded-md hover:bg-green-500" id="answerBtn">
                 <img class="h-6" src="../icons/call-medicine-svgrepo-com.svg" alt="">
