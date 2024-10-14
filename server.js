@@ -3,15 +3,15 @@ const http = require("http");
 const { Server } = require("socket.io");
 const mongoose = require("mongoose");
 const Message = require("./models/Message");
-const userModel = require('./models/users');
+const User = require('./models/users');
 const path = require("path");
-const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 const dotenv = require("dotenv");
 const multer = require('multer');
+const bcrypt = require('bcrypt');
 
 // Configure multer for file uploads
 
@@ -29,6 +29,7 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 app.get("/",(request,response) => {
    response.redirect("/public/views/login.html")
 })
+
 const signAccessToken = async (user) => {
     const payload = {
         expiresIn:'2d',
@@ -41,7 +42,7 @@ const signAccessToken = async (user) => {
     const secret = process.env.ACCES_TOKEN_SECRET;
     const acccesToken = jwt.sign(payload,secret);
     return acccesToken
-  }
+}
   
   // sign token for user middleware
   
@@ -120,7 +121,7 @@ const RefreshAccessToken = async (request, response) => {
     }
   };
 
-  const storage = multer.diskStorage({
+const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads/');
     },
@@ -161,51 +162,99 @@ app.post('/upload-image', upload.single('image'), (req, res) => {
 });
   
   // sign token for user middleware
-app.post('/login',async (req, res) => {
+app.post('/login', async (req, res) => {
     const { username, password } = req.body;
-    const userArray = userModel.users;
     
-    // Find the user in the array
-    const user = userArray.find(u => u.username === username && u.password === password);
-    // username = user[username];
-    if (user) {
-        const {id,role} = userArray.find(u => u.username === username && u.password === password);
-        const TokenPayload = [id,username,role]
-        const accessToken = await signAccessToken(TokenPayload);
-        const refreshToken = await signRefreshToken(TokenPayload);
-        return res.status(200).json({
-          success: true,
-          msg: "user exist",
-          user,
-          accessToken: accessToken,
-          refreshToken: refreshToken,
-        });
-    } else {
-        res.status(401).json({ message: 'Invalid username or password' });
+    try {
+      // Recherche de l'utilisateur dans la base de données
+      const user = await User.findOne({ username }).exec();
+      
+      if (!user) {
+        return res.status(401).json({ message: 'Invalid username' });
+      }
+  
+      // Comparaison du mot de passe
+      const passwordMatch = await bcrypt.compare(password, user.password);
+      if (!passwordMatch) {
+        return res.status(401).json({ message: 'Wrong password' });
+      }
+  
+      // Extraction des informations de l'utilisateur
+      const { _id, role } = user;
+  
+      // Création des tokens d'accès et de rafraîchissement
+      const TokenPayload = [_id, username, role];
+      const accessToken = await signAccessToken(TokenPayload);
+      const refreshToken = await signRefreshToken(TokenPayload);
+  
+      return res.status(200).json({
+        success: true,
+        msg: "User exists",
+        user,
+        accessToken,
+        refreshToken,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'An error occurred during login' });
+    }
+  });
+
+
+app.get("/contacts", verifyAccessToken, async (request, response) => {
+    try {
+      const excludedUserId = request.query.id;
+  
+      // Obtenir tous les utilisateurs de la base de données
+      const users = await User.find().exec(); 
+  
+      // Filtrer les utilisateurs pour exclure celui dont l'ID est fourni
+      const userArray = users.filter(user => user._id.toString() !== excludedUserId);
+  
+      // Retourner la liste des contacts
+      return response.json({ msg: "List of contacts", users: userArray });
+    } catch (error) {
+      console.error(error);
+      return response.status(500).json({ msg: "Error fetching contacts" });
     }
 });
-
-
-
-app.get("/contacts",verifyAccessToken,async (request,response) => {
-  const excludedUserId = request.query.id;
-  const users = userModel.users;
   
-  const userArray = users.filter(user => user.id != excludedUserId);
-  
-  return response.json({msg:"list of contatcs" , users: userArray});
+
+
+app.get("/contact", async (request, response) => {
+  const contactID = request.query.id;
+
+  try {
+    // Recherche du contact dans la base de données par ID
+    const findContact = await User.findById(contactID).exec();
+
+    if (findContact) {
+      return response.status(200).json({ success: true, contactInfo: findContact });
+    } else {
+      // Contact non trouvé
+      return response.status(404).json({ success: false, msg: "Contact non trouvé" });
+    }
+  } catch (error) {
+    console.error(error);
+    return response.status(500).json({ success: false, msg: "Erreur lors de la récupération du contact" });
+  }
 });
 
+  
 
-app.get("/contact", (request,response) => {
-  const userArray = userModel.users;
-  const contactID = request.query.id;
-  if (!Number(contactID)) {
-    return response.status(400).json({msg:"id must be a number"})
-  }
-  const findContact = userArray.find(c => c.id == contactID);
-  if (findContact) {
-    return response.status(200).json({success:true,contactInfo:findContact})
+app.post("/register",upload.single('image'),async (request,response) => {
+  const {username,password} = request.body;
+  try {
+    const saltRounds = Number(process.env.SALTROUNDS);
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const image = request.file ? `/uploads/${request.file.filename}` : null;
+    const newser = new User({
+      username,password:hashedPassword,image,createdAt:new Date()
+    });
+    await newser.save();
+    return response.status(200).json({msg:"user added"})
+  } catch (error) {
+    console.log(error.message)
   }
 })
 

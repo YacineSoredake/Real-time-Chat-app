@@ -1,13 +1,15 @@
-const users = [
-    { id: 1, username: "yacine", password: "123", role:"visitor",image:"♡.jpeg" },
-    { id: 2, username: "shinei", password: "123", role:"visitor",image:"Shinei Nouzen.png" },
-    { id: 3, username: "kanat", password: "123", role:"visitor",image:"téléchargement.jpeg" }
-];
+const mongoose = require('mongoose');
 
-// Function to add a new user (used for registration)
-function addUser(username, password) {
-    const newId = users.length + 1;
-    users.push({ id: newId, username, password });
-}
+// Schéma utilisateur
+const userSchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true },  // Nom d'utilisateur unique
+    password: { type: String, required: true },                // Mot de passe
+    role: { type: String, default: 'visitor' }, 
+    image: { type: String },                                   // URL de l'image de profil
+    createdAt: { type: Date, default: Date.now }               // Date de création du compte
+});
 
-module.exports = { users, addUser };
+// Modèle basé sur le schéma défini
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;

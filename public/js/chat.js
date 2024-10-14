@@ -50,6 +50,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const userID = urlParams.get('userID');
     
     
+    
     // Fetch contact info and initiate chat logic
     (async () => {
         const contactInformations = await getContactInfo(contactID);
@@ -57,10 +58,12 @@ window.addEventListener('DOMContentLoaded', () => {
         
         document.getElementById('incomigcallmsg').innerHTML=`Incoming call from ${username}`
         
-        contactImgHeader.setAttribute("src",`../images/${image}`);
+        contactImgHeader.setAttribute("src",`${image}`);
         contactUsrHeader.innerHTML=username;
 
-        const room = `room-${Math.min(contactID, userID)}-${Math.max(contactID, userID)}`;
+        const room = contactID.localeCompare(userID) < 0 
+            ? `room-${contactID}-${userID}` 
+            : `room-${userID}-${contactID}`;
         joinRoom(room);
     
         function joinRoom(room) {
@@ -181,7 +184,7 @@ window.addEventListener('DOMContentLoaded', () => {
             } else {
                 li.className='flex items-center shadow-md border border-indigo-600'
                 const img = document.createElement('img');
-                img.setAttribute("src",`../images/${image}`); // Set the source of the sender's image
+                img.setAttribute("src",`${image}`); // Set the source of the sender's image
                 img.classList.add('sender-image'); // Optional: Add a class for styling the image
         
                 // Create a text node for the sender's name and message
