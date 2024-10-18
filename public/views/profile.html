@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-white">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> MyChat Contacts</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="">
+    <div class="flex items-center p-5 justify-around gap-5">
+        <button class="bg-indigo-500 flex items-center shadow-md p-1 rounded-md hover:bg-indigo-600" onclick="history.back()">
+            <img class="h-6" src="../icons/back-svgrepo-com.svg" alt="Back">
+        </button>
+        <div class="flex gap-7">
+            <a class="text-lg font-semibold text-black" href="./contact.html">Home</a>
+            <a class="text-lg font-semibold text-indigo-500" href="">Profil</a>
+        </div>
+    </div>
+    <div id="notif-cnt" class=" hidden m-3 flex self-center p-1 rounded-md shadow-md bg-green-300 gap-3 justify-center">
+        <img class="h-6" src="../icons/done-ring-round-svgrepo-com.svg" alt="">
+        <h3 id="notif-msg" class="font-bold text-white"></h3>
+    </div>
+    <div id="profile-container" class="max-w-2xl mx-4 sm:max-w-sm md:max-w-sm lg:max-w-sm xl:max-w-sm sm:mx-auto md:mx-auto lg:mx-auto xl:mx-auto mt-16 bg-white shadow-xl rounded-lg text-gray-900">
+        <div class="rounded-t-lg h-32 overflow-hidden">
+            <img id="background-img" class="object-cover object-top w-full" src='https://images.unsplash.com/photo-1549880338-65ddcdfd017b?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&ixid=eyJhcHBfaWQiOjE0NTg5fQ' alt='Mountain'>
+        </div>
+        <div class="mx-auto w-32 h-32 relative -mt-16 border-2 border-indigo-500 rounded-full overflow-hidden">
+            <img id="image" name="image" class="object-cover object-center h-32" alt='profile'>
+        </div>
+        <div class="text-center mt-2">
+            <h2 id="profile-username" class="font-semibold"></h2>
+            <p id="profile-temps" class="text-gray-500"></p>
+        </div>
+        <div id="btnParent" class="p-4 border-t mx-8 mt-2">
+            <button id="save-btn" class="w-1/2 hidden mx-auto rounded-full text-indigo-500 border border-indigo-500 bg-gray-100 hover:shadow-lg font-semibold hover:text-white hover:bg-indigo-500 px-6 py-2">Save</button>
+            <button id="edit-btn" class="w-1/2 block mx-auto rounded-full text-indigo-500 border border-indigo-500 bg-gray-100 hover:shadow-lg font-semibold hover:text-white hover:bg-indigo-500 px-6 py-2">Edit</button>
+        </div>
+        <!-- Hidden file input for image upload -->
+        <input type="file" id="image-upload" accept="image/*" style="display: none;">
+    </div>
+
+    <script src="../js/edit_profil.js"></script>
+    <script type="module" src="../js/profil.js"></script>
+    <script type="module">
+        gsap.from("#profile-container", { 
+        y: -200,   
+        opacity: 0, 
+        duration: 1.3,  
+        ease: "power2.out" 
+    });
+</script>
+</body>
+</html>

@@ -15,6 +15,7 @@ if (userPayload) {
     console.log("User not authenticated");
 }
 
+document.getElementById('profileLink').setAttribute('href',`./profile.html?id=${userPayload.userID}`);
 greetMsg.innerHTML=`Hi ${userPayload.username}, Wanna chat ?`;
 // Correct the spelling from "aceessToken"
 
