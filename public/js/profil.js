@@ -1,10 +1,15 @@
 import { getUserPayload } from './utils.js';
 
 const userPayload = getUserPayload();
+const currentAccessToken = localStorage.getItem("aceessToken");
 
 const id = userPayload.userID;
 const response = await fetch(`/profile?id=${id}`, {
-    method: 'GET'
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${currentAccessToken}`,
+      'Content-Type': 'application/json',
+  }
   });
 const result = await response.json();
 

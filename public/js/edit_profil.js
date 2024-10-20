@@ -5,6 +5,7 @@
        const image = document.getElementById('image');
        const imageUpload = document.getElementById('image-upload');
        const btnParent = document.getElementById('btnParent');
+       const currentAccessToken = localStorage.getItem("aceessToken");
 
        const urlParams = new URLSearchParams(window.location.search);
        const id = urlParams.get('id');
@@ -53,7 +54,10 @@
                 try {
                     const response = await fetch(`/profile?id=${id}`, {
                         method: 'PUT',
-                        body: data
+                        body: data,
+                        headers: {
+                            'Authorization': `Bearer ${currentAccessToken}`
+                        }
                     });
             
                     const result = await response.json();

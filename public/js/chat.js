@@ -8,13 +8,17 @@ const userID = urlParams.get('userID');
 const contactImgHeader = document.getElementById('contactImgHeader');
 const contactUsrHeader = document.getElementById('contactUsrHeader');
 const fileInput = document.getElementById('fileInput');
+const currentAccessToken = localStorage.getItem("aceessToken");
 
-// Function to get contact information
+// Function to get contact information 
 const getContactInfo = async (arg) => {
     try {
         const response = await fetch(`/contact?id=${arg}`, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
+            headers: {
+                'Authorization': `Bearer ${currentAccessToken}`,
+                'Content-Type': 'application/json',
+            }
         });
 
         if (response.ok) {
