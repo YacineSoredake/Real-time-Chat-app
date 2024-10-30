@@ -47,7 +47,7 @@ To set up and run this project locally:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/chat-app.git
+   git clone https://github.com/YacineSoredake/Chat-app.git
 2. Navigate into the project directory::
    ```bash
    cd chat-App
